@@ -1,11 +1,17 @@
 FROM swift:5.2
 
-MAINTAINER tokorom
+ARG DANGER_SWIFT_REPOSITORY="https://github.com/danger/danger-swift.git"
+ARG DANGER_SWIFT_BRANCH="3.4.1"
 
-LABEL "com.github.actions.name"="Danger Swift with swift-format"
-LABEL "com.github.actions.description"="Runs Swift Dangerfiles with swift-format"
-LABEL "com.github.actions.icon"="zap"
-LABEL "com.github.actions.color"="blue"
+ARG DANGER_SWIFT_FORMAT_REPOSITORY="https://github.com/tokorom/danger-swift-format.git"
+ARG DANGER_SWIFT_FORMAT_BRANCH="0.1.0"
+
+ARG SWIFT_FORMAT_REPOSITORY="https://github.com/apple/swift-format.git"
+ARG SWIFT_FORMAT_BRANCH="swift-5.2-branch"
+
+LABEL repository "https://github.com/tokorom/danger-swift-format"
+LABEL homepage "https://github.com/tokorom/danger-swift-format"
+LABEL maintainer "tokorom <tokorom@gmail.com>"
 
 # Install nodejs
 RUN apt-get update -q \
@@ -16,8 +22,14 @@ RUN apt-get update -q \
     && rm -r /var/lib/apt/lists/*
 
 # Install danger-swift
-RUN git clone --depth=1 -b swift-format https://github.com/tokorom/danger-swift.git _danger-swift \
+RUN git clone --depth=1 -b $DANGER_SWIFT_BRANCH $DANGER_SWIFT_REPOSITORY _danger-swift \
     && cd _danger-swift \
+    && make install \
+    && cd
+
+# Install danger-swift-format
+RUN git clone --depth=1 -b $DANGER_SWIFT_FORMAT_BRANCH $DANGER_SWIFT_FORMAT_REPOSITORY _danger-swift-format \
+    && cd _danger-swift-format/make \
     && make install \
     && cd
 
@@ -25,7 +37,7 @@ RUN git clone --depth=1 -b swift-format https://github.com/tokorom/danger-swift.
 RUN npm install -g danger
 
 # Install swift-format
-RUN git clone -b swift-5.2-branch https://github.com/apple/swift-format.git _swift-format \
+RUN git clone -b  $SWIFT_FORMAT_BRANCH $SWIFT_FORMAT_REPOSITORY _swift-format \
     && cd _swift-format \
     && swift build -c release \
     && ln .build/release/swift-format /usr/local/bin/swift-format \

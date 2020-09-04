@@ -11,7 +11,7 @@ final class SwiftFormatExecutorTest: XCTestCase {
     )
 
     let script = executor.makeScript()
-    XCTAssertEqual(script, "/usr/local/bin/swift-format lint -r . 2>&1")
+    XCTAssertEqual(script, "/usr/local/bin/swift-format lint -r .")
   }
 
   func testChangeExecutablePath() {
@@ -22,7 +22,7 @@ final class SwiftFormatExecutorTest: XCTestCase {
     )
 
     let script = executor.makeScript()
-    XCTAssertEqual(script, "swift-format lint -r . 2>&1")
+    XCTAssertEqual(script, "swift-format lint -r .")
   }
 
   func testMakeScriptWithSomeDirs() {
@@ -33,7 +33,7 @@ final class SwiftFormatExecutorTest: XCTestCase {
     )
 
     let script = executor.makeScript()
-    XCTAssertEqual(script, "/usr/local/bin/swift-format lint -r app app2 Tests 2>&1")
+    XCTAssertEqual(script, "/usr/local/bin/swift-format lint -r app app2 Tests")
   }
 
   func testMakeScriptWithConfigurationPath() {
@@ -44,6 +44,6 @@ final class SwiftFormatExecutorTest: XCTestCase {
     )
 
     let script = executor.makeScript()
-    XCTAssertEqual(script, "/usr/local/bin/swift-format --configuration custom.conf lint -r . 2>&1")
+    XCTAssertEqual(script, "/usr/local/bin/swift-format --configuration custom.conf lint -r .")
   }
 }

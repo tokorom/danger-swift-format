@@ -1,10 +1,10 @@
-import BBB
 import AAA
+import BBB
 
-class Foo{
-    public let BAR: Bar
+class Foo {
+  private let bar : Bar
 
-    func Baz( )  {
-      print( "!!!" )
-    }
+  func baz() {
+    print("!!!")
+  }
 }

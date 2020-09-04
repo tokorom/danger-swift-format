@@ -6,3 +6,6 @@ test:
 
 sample: build
 	swiftc --driver-mode=swift -I .build/debug/ -L .build/debug/ -lDangerSwiftFormatDlib Sample.swift
+
+lint:
+	swift-format lint -r Sources Tests Samples

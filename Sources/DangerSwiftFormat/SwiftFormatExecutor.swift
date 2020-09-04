@@ -13,7 +13,6 @@ struct SwiftFormatExecutor {
   let configurationPath: String?
 
   static let prefixArguments: [String] = ["lint", "-r"]
-  static let suffixArguments: [String] = ["2>&1"]
 
   typealias NotifyLine = (String) -> Void
 
@@ -30,13 +29,16 @@ struct SwiftFormatExecutor {
       + configuration
       + Self.prefixArguments
       + targetDirectories
-      + Self.suffixArguments
 
     return arguments.joined(separator: " ")
   }
 
-  func execute() -> Data {
-    let script = makeScript()
+  private func execute() -> String {
+    let temporaryDirectory = FileManager.default.temporaryDirectory
+    let tempFilePath = temporaryDirectory.appendingPathComponent("reports.txt")
+
+    let rawScript = makeScript()
+    let script = "\(rawScript) > \(tempFilePath.path) 2>&1"
     print("script: \(script)")
 
     let task = Process()
@@ -44,29 +46,16 @@ struct SwiftFormatExecutor {
     task.arguments = ["-c", script]
     task.currentDirectoryPath = FileManager.default.currentDirectoryPath
 
-    let stdout = Pipe()
-    task.standardOutput = stdout
-    let stderr = Pipe()
-    task.standardError = stderr
     task.launch()
     task.waitUntilExit()
 
-    var stdoutData = stdout.fileHandleForReading.readDataToEndOfFile()
-    let stderrData = stderr.fileHandleForReading.readDataToEndOfFile()
-    stdoutData.append(stderrData)
-
-    return stdoutData
+    return tempFilePath.path
   }
 
   func executeAndNotify(notify: NotifyLine) throws {
-    let data = execute()
+    let tempFilePath = execute()
 
-    let temporaryDirectory = FileManager.default.temporaryDirectory
-    let tempFilePath = temporaryDirectory.appendingPathExtension("reports.txt")
-    try data.write(to: tempFilePath)
-    print(tempFilePath.path)
-
-    _ = freopen(tempFilePath.path, "r", stdin)
+    _ = freopen(tempFilePath, "r", stdin)
     while let line = readLine() {
       notify(line)
     }

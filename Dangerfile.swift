@@ -4,7 +4,7 @@ import DangerSwiftFormat
 _ = Danger()
 
 do {
-  try SwiftFormat.run(targetDirectories: ["Sources", "Tests"]) { report in
+  try SwiftFormat.run(targetDirectories: ["Sources", "Tests", "Samples"]) { report in
     switch report.severity {
     case .note:
       if let file = report.file, let line = report.line {

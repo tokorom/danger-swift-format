@@ -1,10 +1,7 @@
 FROM swift:5.2
 
-ARG DANGER_SWIFT_REPOSITORY="https://github.com/danger/danger-swift.git"
-ARG DANGER_SWIFT_BRANCH="3.4.1"
-
-ARG DANGER_SWIFT_FORMAT_REPOSITORY="https://github.com/tokorom/danger-swift-format.git"
-ARG DANGER_SWIFT_FORMAT_BRANCH="0.1.0"
+ARG DANGER_SWIFT_REPOSITORY="https://github.com/tokorom/danger-swift.git"
+ARG DANGER_SWIFT_BRANCH="with-danger-swift-format/3.4.1"
 
 ARG SWIFT_FORMAT_REPOSITORY="https://github.com/apple/swift-format.git"
 ARG SWIFT_FORMAT_BRANCH="swift-5.2-branch"
@@ -24,12 +21,6 @@ RUN apt-get update -q \
 # Install danger-swift
 RUN git clone --depth=1 -b $DANGER_SWIFT_BRANCH $DANGER_SWIFT_REPOSITORY _danger-swift \
     && cd _danger-swift \
-    && make install \
-    && cd
-
-# Install danger-swift-format
-RUN git clone --depth=1 -b $DANGER_SWIFT_FORMAT_BRANCH $DANGER_SWIFT_FORMAT_REPOSITORY _danger-swift-format \
-    && cd _danger-swift-format/make \
     && make install \
     && cd
 

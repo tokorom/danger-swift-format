@@ -35,6 +35,7 @@ struct SwiftFormatExecutor {
 
   func execute() -> Data {
     let script = makeScript()
+    print("script: \(script)")
 
     let task = Process()
     task.launchPath = "/bin/sh"

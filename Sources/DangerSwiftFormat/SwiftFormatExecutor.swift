@@ -15,6 +15,8 @@ struct SwiftFormatExecutor {
   static let prefixArguments: [String] = ["lint", "-r"]
   static let suffixArguments: [String] = ["2>&1"]
 
+  typealias NotifyLine = (String) -> Void
+
   func makeScript() -> String {
     let configuration: [String]
     if let configurationPath = configurationPath {
@@ -54,5 +56,19 @@ struct SwiftFormatExecutor {
     stdoutData.append(stderrData)
 
     return stdoutData
+  }
+
+  func executeAndNotify(notify: NotifyLine) throws {
+    let data = execute()
+
+    let temporaryDirectory = FileManager.default.temporaryDirectory
+    let tempFilePath = temporaryDirectory.appendingPathExtension("reports.txt")
+    try data.write(to: tempFilePath)
+    print(tempFilePath.path)
+
+    _ = freopen(tempFilePath.path, "r", stdin)
+    while let line = readLine() {
+      notify(line)
+    }
   }
 }

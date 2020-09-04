@@ -11,17 +11,17 @@ public struct SwiftFormat {
     targetDirectories: [String] = ["."],
     configurationPath: String? = nil,
     notify: NotifyReport
-  ) {
+  ) throws {
     let executor = SwiftFormatExecutor(
       executablePath: executablePath,
       targetDirectories: targetDirectories,
       configurationPath: configurationPath
     )
 
-    let output = executor.execute()
-    let reports = Reporter.analyzeData(output)
-
-    for report in reports {
+    try executor.executeAndNotify { line in
+      guard let report = Reporter.analyzeAndReport(line) else {
+        return
+      }
       notify(report)
     }
   }

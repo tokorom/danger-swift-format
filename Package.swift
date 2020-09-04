@@ -6,7 +6,8 @@ import PackageDescription
 let package = Package(
   name: "DangerSwiftFormat",
   products: [
-    .library(name: "DangerSwiftFormat", targets: ["DangerSwiftFormat"])
+    .library(name: "DangerSwiftFormat", targets: ["DangerSwiftFormat"]),
+    .library(name: "DangerSwiftFormatDlib", type: .dynamic, targets: ["DangerSwiftFormat"]),
   ],
   targets: [
     .target(
